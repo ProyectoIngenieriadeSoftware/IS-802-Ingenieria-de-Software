@@ -8,7 +8,8 @@ import { Card } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ArrowLeft, Eye, EyeOff, CheckCircle } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
+import { PhotoCapture } from "@/components/photo-capture"
 
 //mi libreria de api
 import { API_URL } from "@/lib/api";
@@ -32,12 +33,9 @@ export function VisitorRegistration({ dni, onBack, onComplete }: VisitorRegistra
     tipoVisita: "",
     tipoVisitaOtro: "",
     motivo: "",
-    password: "",
-    confirmPassword: "",
   })
 
-  const [showPassword, setShowPassword] = useState(false) // Estado para mostrar/ocultar la contraseña
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false) // Estado para mostrar/ocultar la confirmación de contraseña
+  const [photoData, setPhotoData] = useState<string | null>(null) // Estado para la foto de reconocimiento facial
   const [isSubmitting, setIsSubmitting] = useState(false) // Estado para manejar el envío del formulario
 
   // Función que maneja los cambios en los campos de entrada del formulario
@@ -51,15 +49,9 @@ export function VisitorRegistration({ dni, onBack, onComplete }: VisitorRegistra
     setFormData((prev) => ({ ...prev, tipoVisita: value, tipoVisitaOtro: "" })) // Resetea "tipoVisitaOtro" cuando el tipo de visita cambia
   }
 
-  // Función que valida la contraseña (mínimo 8 caracteres, al menos una mayúscula, una minúscula, un número y un carácter especial)
-  const validatePassword = (pwd: string): boolean => {
-    return (
-      pwd.length >= 8 &&
-      /[A-Z]/.test(pwd) &&
-      /[a-z]/.test(pwd) &&
-      /[0-9]/.test(pwd) &&
-      /[!@#$%^&*(),.?":{}|<>]/.test(pwd)
-    )
+  // Función para capturar la foto del usuario
+  const handlePhotoCapture = (photo: string) => {
+    setPhotoData(photo)
   }
 
   // Función que maneja el envío del formulario
@@ -72,13 +64,8 @@ const handleSubmit = async (e: React.FormEvent) => {
     return;
   }
 
-  if (!validatePassword(formData.password)) {
-    alert("La contraseña no cumple los requisitos");
-    return;
-  }
-
-  if (formData.password !== formData.confirmPassword) {
-    alert("Las contraseñas no coinciden");
+  if (!photoData) {
+    alert("Por favor tome una foto para el reconocimiento facial");
     return;
   }
 
@@ -118,12 +105,12 @@ const handleSubmit = async (e: React.FormEvent) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        Id_persona: persona.Id_persona, // ✔ correcto
+        Id_persona: persona.Id_persona,
         TipoVisita: finalTipoVisita,
         Motivo: formData.motivo,
         Email: formData.email,
         Telefono: formData.telefono,
-        Contrasena: formData.password // ✔ correcto
+        FotoBase64: photoData
       })
     });
 
@@ -141,7 +128,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   motivo: formData.motivo,
   email: formData.email,
   telefono: formData.telefono,
-  password: formData.password,
+  photoBase64: photoData,
   id_persona: persona.Id_persona,
   id_visita: visita.Id_visita ?? visita.id ?? null
 });
@@ -318,112 +305,17 @@ const handleSubmit = async (e: React.FormEvent) => {
                 />
               </div>
 
-              {/* Crear contraseña para próximas visitas */}
+              {/* Reconocimiento facial */}
               <div className="border-t pt-4">
-                <h3 className="text-lg font-semibold text-[#003876] mb-4">Crear contraseña para próximas visitas</h3>
-
                 <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="password" className="text-[#003876] font-medium">
-                      Contraseña *
-                    </Label>
-                    <div className="relative">
-                      <Input
-                        id="password"
-                        name="password"
-                        type={showPassword ? "text" : "password"}
-                        value={formData.password}
-                        onChange={handleInputChange}
-                        required
-                        tabIndex={8}
-                        className="pr-10 border-gray-300 focus:border-[#003876] focus:ring-[#003876]"
-                        disabled={isSubmitting}
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-0 top-0 h-full px-3"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="confirmPassword" className="text-[#003876] font-medium">
-                      Confirmar Contraseña *
-                    </Label>
-                    <div className="relative">
-                      <Input
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        type={showConfirmPassword ? "text" : "password"}
-                        value={formData.confirmPassword}
-                        onChange={handleInputChange}
-                        required
-                        tabIndex={9}
-                        className="pr-10 border-gray-300 focus:border-[#003876] focus:ring-[#003876]"
-                        disabled={isSubmitting}
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-0 top-0 h-full px-3"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      >
-                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <p className="text-xs text-blue-700 mb-2 font-medium">Requisitos de contraseña:</p>
-                    <ul className="text-xs text-blue-600 space-y-1">
-                      <li className="flex items-center gap-2">
-                        {formData.password.length >= 8 ? (
-                          <CheckCircle className="w-3 h-3 text-green-600" />
-                        ) : (
-                          <span className="w-3 h-3 rounded-full border border-blue-400" />
-                        )}
-                        Mínimo 8 caracteres
-                      </li>
-                      <li className="flex items-center gap-2">
-                        {/[A-Z]/.test(formData.password) ? (
-                          <CheckCircle className="w-3 h-3 text-green-600" />
-                        ) : (
-                          <span className="w-3 h-3 rounded-full border border-blue-400" />
-                        )}
-                        Al menos una mayúscula
-                      </li>
-                      <li className="flex items-center gap-2">
-                        {/[a-z]/.test(formData.password) ? (
-                          <CheckCircle className="w-3 h-3 text-green-600" />
-                        ) : (
-                          <span className="w-3 h-3 rounded-full border border-blue-400" />
-                        )}
-                        Al menos una minúscula
-                      </li>
-                      <li className="flex items-center gap-2">
-                        {/[0-9]/.test(formData.password) ? (
-                          <CheckCircle className="w-3 h-3 text-green-600" />
-                        ) : (
-                          <span className="w-3 h-3 rounded-full border border-blue-400" />
-                        )}
-                        Al menos un número
-                      </li>
-                      <li className="flex items-center gap-2">
-                        {/[!@#$%^&*(),.?":{}|<>]/.test(formData.password) ? (
-                          <CheckCircle className="w-3 h-3 text-green-600" />
-                        ) : (
-                          <span className="w-3 h-3 rounded-full border border-blue-400" />
-                        )}
-                        Al menos un carácter especial
-                      </li>
-                    </ul>
-                  </div>
+                  <h3 className="text-lg font-semibold text-[#003876]">Mi rostro (enrolamiento)</h3>
+                  <p className="text-sm text-gray-600">
+                    Permite ingresar por FACIAL en portones con lector facial. (Demo: guardamos la imagen como base64).
+                  </p>
+                  <PhotoCapture
+                    onPhotoCapture={handlePhotoCapture}
+                    existingPhoto={null}
+                  />
                 </div>
               </div>
 
@@ -431,8 +323,8 @@ const handleSubmit = async (e: React.FormEvent) => {
               <Button
                 type="submit"
                 className="w-full h-12 text-base font-bold bg-[#FFC107] hover:bg-[#FFB300] text-[#003876]"
-                disabled={isSubmitting}
-                tabIndex={10}
+                disabled={isSubmitting || !photoData}
+                tabIndex={8}
               >
                 {isSubmitting ? "Registrando..." : "Continuar con Registro de Ingreso"}
               </Button>
