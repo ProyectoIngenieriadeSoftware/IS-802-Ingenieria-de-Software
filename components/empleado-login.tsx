@@ -142,7 +142,7 @@ export default function EmpleadoLogin() {
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                   <Input
                     type="text"
-                    placeholder="Número de cuenta"
+                    placeholder="Número de empleado"
                     value={numeroCuenta}
                     onChange={handleNumeroCuentaChange}
                     className="h-14 text-lg pl-12 bg-white border-2 border-gray-300 focus:border-[#003876] focus:ring-[#003876] text-gray-900 placeholder:text-gray-400"
@@ -151,7 +151,6 @@ export default function EmpleadoLogin() {
                     tabIndex={1}
                   />
                 </div>
-                <p className="text-xs text-gray-500">Ejemplo: 20241234567</p>
               </div>
 
               {/* Campo de contraseña */}
