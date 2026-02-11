@@ -50,40 +50,6 @@ function getCurrentSemester(): string {
   return month >= 1 && month <= 6 ? "1" : "2"
 }
 
-// Función para obtener la fecha mínima de entrada (si es antes de las 6 AM o después de las 10 PM, se establece para el día siguiente)
-function getMinimumEntryDate(): string {
-  const now = new Date()
-  const currentHour = now.getHours()
-
-  // Si es después de las 10 PM o antes de las 6 AM, la fecha mínima es mañana
-  if (currentHour >= 22 || currentHour < 6) {
-    const tomorrow = new Date(now)
-    tomorrow.setDate(tomorrow.getDate() + 1)
-    return tomorrow.toISOString().split("T")[0]
-  }
-
-  // Si es dentro del horario permitido, la fecha mínima es hoy
-  return now.toISOString().split("T")[0]
-}
-
-// Función para obtener la hora predeterminada de entrada, ajustada al horario de la universidad
-function getDefaultEntryTime(): string {
-  const now = new Date()
-  const currentHour = now.getHours()
-
-  // Si está fuera del horario de la universidad, establecer 8:00 AM como hora predeterminada
-  if (currentHour >= 22 || currentHour < 6) {
-    return "08:00"
-  }
-
-  // Si está dentro del horario de la universidad, establecer la hora siguiente como predeterminada
-  const nextHour = currentHour + 1
-  if (nextHour <= 22) {
-    return `${nextHour.toString().padStart(2, "0")}:00`
-  }
-
-  return "08:00"
-}
 
 // Componente principal para el registro de entrada
 export function EntryRegistration({ userData, onBack, onComplete, idLabel = "Número de Cuenta", idPlaceholder = "Ingrese su número de cuenta" }: EntryRegistrationProps) {
@@ -109,48 +75,10 @@ export function EntryRegistration({ userData, onBack, onComplete, idLabel = "Nú
   const [showVehicleRegistration, setShowVehicleRegistration] = useState(false) // Estado para mostrar el registro de vehículo
   const [vehicleData, setVehicleData] = useState<any>(null) // Datos del vehículo
   const [photoData, setPhotoData] = useState<string | null>(initialPhoto) // Foto del usuario
-  const [plannedEntryDate, setPlannedEntryDate] = useState(getMinimumEntryDate()) // Fecha de entrada planificada
-  const [plannedEntryTime, setPlannedEntryTime] = useState(getDefaultEntryTime()) // Hora de entrada planificada
-  const [estimatedExitTime, setEstimatedExitTime] = useState("") // Hora estimada de salida
   const [periodType, setPeriodType] = useState(initialPeriod.type) // Tipo de periodo
   const [periodNumber, setPeriodNumber] = useState(initialPeriod.number) // Número del periodo
   const [isSubmitting, setIsSubmitting] = useState(false) // Estado de envío del formulario
 
-  // Función para obtener las opciones de horas disponibles para la entrada (6:00 AM a 10:00 PM)
-  const getEntryTimeOptions = () => {
-    const times: string[] = []
-    for (let hour = 6; hour <= 22; hour++) {
-      times.push(`${hour.toString().padStart(2, "0")}:00`)
-      if (hour < 22) {
-        times.push(`${hour.toString().padStart(2, "0")}:30`)
-      }
-    }
-    return times
-  }
-
-  // Función para obtener las opciones de horas válidas para la salida en base a la hora de entrada
-  const getValidExitTimes = () => {
-    if (!plannedEntryTime) return []
-
-    const times: string[] = []
-    const [entryHour, entryMinute] = plannedEntryTime.split(":").map(Number)
-    const closingHour = 22
-
-    const startHour = entryMinute >= 30 ? entryHour + 1 : entryHour
-
-    for (let hour = startHour; hour <= closingHour; hour++) {
-      if (hour === startHour && entryMinute < 30) {
-        times.push(`${hour.toString().padStart(2, "0")}:30`)
-      } else {
-        times.push(`${hour.toString().padStart(2, "0")}:00`)
-        if (hour < closingHour) {
-          times.push(`${hour.toString().padStart(2, "0")}:30`)
-        }
-      }
-    }
-
-    return times
-  }
 
   // Función para seleccionar el método de entrada (peatonal o vehicular)
   const handleEntryMethodSelect = (method: "peatonal" | "vehicular") => {
@@ -187,18 +115,12 @@ export function EntryRegistration({ userData, onBack, onComplete, idLabel = "Nú
     setVehicleData(null)
   }
 
-  // Función para manejar el cambio de la hora de entrada
-  const handleEntryTimeChange = (newTime: string) => {
-    setPlannedEntryTime(newTime)
-    // Limpiar la hora estimada de salida cuando se cambie la hora de entrada
-    setEstimatedExitTime("")
-  }
 
   // Función para enviar el formulario de registro de entrada
   // Función para enviar el formulario de registro de entrada
 // Función para enviar el formulario de registro de entrada
 const handleSubmit = async () => {
-  if (!photoData || !plannedEntryDate || !plannedEntryTime) {
+  if (!photoData) {
     alert("Por favor complete todos los campos requeridos");
     return;
   }
@@ -234,17 +156,11 @@ const handleSubmit = async () => {
       return;
     }
 
-    // 3️⃣ Construir objeto EXACTO para el backend
+    // 3️⃣ Construir objeto para el backend (fecha y hora se asignan automáticamente en el backend)
     const entryData = {
-      Fecha: plannedEntryDate,
-      Hora_entrada: plannedEntryTime,
-      Hora_salida:
-        estimatedExitTime && estimatedExitTime !== "none"
-          ? estimatedExitTime
-          : null,
       Motivo: userData.motivoVisita || null,
       Tipo: tipoFinal,
-      Id_persona: persona.Id_persona, // 🔥 CLAVE REAL
+      Id_persona: persona.Id_persona,
     };
 
     // 4️⃣ Enviar registro
@@ -489,96 +405,11 @@ if (showVehicleRegistration) {
                   />
                 </div>
 
-                {/* Fecha y hora de entrada */}
-                <div className="space-y-2">
-                  <Label htmlFor="entryDate" className="text-foreground">
-                    Fecha de entrada a la universidad
-                  </Label>
-                  <Input
-                    id="entryDate"
-                    type="date"
-                    value={plannedEntryDate}
-                    onChange={(e) => setPlannedEntryDate(e.target.value)}
-                    min={getMinimumEntryDate()}
-                    className="bg-input border-border text-foreground"
-                  />
-                  {(new Date().getHours() >= 22 || new Date().getHours() < 6) && (
-                    <p className="text-sm text-blue-600 bg-blue-50 p-3 rounded-md">
-                      💡 Puede registrar su entrada para mañana o días posteriores. Seleccione la fecha y hora en que
-                      planea ingresar a la universidad.
-                    </p>
-                  )}
-                </div>
-
-                {/* Hora planificada de entrada */}
-                <div className="space-y-2">
-                  <Label htmlFor="entryTime" className="text-foreground">
-                    Hora planificada de entrada (Horario UNAH: 6:00 AM - 10:00 PM)
-                  </Label>
-                  <Select value={plannedEntryTime} onValueChange={handleEntryTimeChange}>
-                    <SelectTrigger className="bg-input border-border text-foreground">
-                      <SelectValue placeholder="Seleccione hora de entrada" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {getEntryTimeOptions().map((time) => (
-                        <SelectItem key={time} value={time}>
-                          {time}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <p className="text-xs text-muted-foreground">
-                    Seleccione la hora en que planea entrar a la universidad
-                  </p>
-                </div>
-
-                {/* Hora estimada de salida */}
-                <div className="space-y-2">
-                  <Label htmlFor="exitTime" className="text-foreground">
-                    Hora estimada de salida (opcional)
-                  </Label>
-                  <Select value={estimatedExitTime} onValueChange={setEstimatedExitTime} disabled={!plannedEntryTime}>
-                    <SelectTrigger className="bg-input border-border text-foreground">
-                      <SelectValue
-                        placeholder={plannedEntryTime ? "Seleccione hora de salida (opcional)" : "Primero seleccione hora de entrada"}
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">Sin hora estimada</SelectItem>
-                      {getValidExitTimes().map((time) => (
-                        <SelectItem key={time} value={time}>
-                          {time}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <p className="text-xs text-muted-foreground">
-                    Opcional: ¿a qué hora aproximada saldrá de la universidad?
-                  </p>
-                </div>
-
-                {/* Información del registro */}
-                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-2">
-                  <p className="text-sm font-medium text-blue-900">📋 Información del registro</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-blue-700">Registrando ahora:</span>
-                    <span className="font-medium text-blue-900">
-                      {new Date().toLocaleDateString("es-HN")} a las{" "}
-                      {new Date().toLocaleTimeString("es-HN", { hour: "2-digit", minute: "2-digit" })}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-blue-700">Entrada planificada:</span>
-                    <span className="font-medium text-blue-900">
-                      {plannedEntryDate || "Seleccione fecha"} {plannedEntryTime ? `a las ${plannedEntryTime}` : ""}
-                    </span>
-                  </div>
-                </div>
 
                 {/* Botón de completar registro */}
                 <Button
                   onClick={handleSubmit}
-                  disabled={isSubmitting || !photoData || !plannedEntryDate || !plannedEntryTime}
+                  disabled={isSubmitting || !photoData}
                   className="w-full h-12 text-base font-bold bg-[#FFC107] hover:bg-[#FFB300] text-[#003876]"
                   tabIndex={20}
                 >
