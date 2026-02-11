@@ -1,92 +1,29 @@
 "use client"
 
 import type React from "react"
-import { useEffect, useState } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { UserCheck, Users } from "lucide-react"
+import { UserCheck, Users, GraduationCap } from "lucide-react"
 
 /**
  * Componente para seleccionar el tipo de usuario a registrar
- * Permite al empleado elegir entre registrar visitante o estudiante
+ * Permite al empleado elegir entre registrar visitante, estudiante o empleado
  */
 export function SeleccionUsuario() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const [empleadoNombre, setEmpleadoNombre] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
-  useEffect(() => {
-    // Obtener información del empleado de la sesión
-    const sid = searchParams.get("sid")
-    
-    if (!sid) {
-      router.push("/empleado-login")
-      return
-    }
-
-    /**const sessionData = sessionStorage.getItem(`empleado_session_${sid}`)**/
-    const sessionData = sessionStorage.getItem(`session_${sid}`)
-
-    if (!sessionData) {
-      router.push("/empleado-login")
-      return
-    }
-
-    const empleado = JSON.parse(sessionData)
-    setEmpleadoNombre(empleado.nombre)
-  }, [searchParams, router])
-
-  /**
-   * Maneja la selección de tipo de usuario
-   */
-  const handleSeleccion = (tipo: "visitante" | "estudiante") => {
+  const handleSeleccion = (tipo: "visitante" | "estudiante" | "maestro") => {
     setIsLoading(true)
-    const sid = searchParams.get("sid")
-
-    // Guardar el tipo de usuario seleccionado en la sesión
-    /**const sessionData = sessionStorage.getItem(`empleado_session_${sid}`)
-    if (sessionData) {
-      const empleado = JSON.parse(sessionData)
-      empleado.tipoUsuarioSeleccionado = tipo
-
-      sessionStorage.setItem(`empleado_session_${sid}`, JSON.stringify(empleado))
-    }**/
-    const sessionData = sessionStorage.getItem(`session_${sid}`)
-
-    if (sessionData) {
-      const empleado = JSON.parse(sessionData)
-      empleado.tipoUsuarioSeleccionado = tipo
-
-      sessionStorage.setItem(`session_${sid}`, JSON.stringify(empleado))
-    }
-
-
-    // Redirigir según la selección
-    /*if (tipo === "visitante") {
-      router.push(`/dni-input?sid=${sid}`)
-    } else {
-      router.push(`/registro-estudiante?sid=${sid}`)
-    }**/
-    // Redirigir según la selección
     if (tipo === "visitante") {
-      router.push(`/registro-visita?sid=${sid}`)
+      router.push("/registro-visita")
+    } else if (tipo === "maestro") {
+      router.push("/registro-empleado")
     } else {
-      router.push(`/registro-entrada?sid=${sid}`)
+      router.push("/registro-entrada")
     }
-  }
-
-  /**
-   * Maneja el cierre de sesión
-   */
-  const handleCerrarSesion = () => {
-    const sid = searchParams.get("sid")
-    if (sid) {
-      /**sessionStorage.removeItem(`empleado_session_${sid}`)**/
-      sessionStorage.removeItem(`session_${sid}`)
-    }
-    router.push("/empleado-login")
   }
 
   return (
@@ -97,17 +34,9 @@ export function SeleccionUsuario() {
           <div>
             <h1 className="text-2xl font-bold text-white">Ingreso UNAH</h1>
             <p className="text-sm text-[#FFC107]">
-              Empleado: {empleadoNombre || "Cargando..."}
+              Sistema de Control de Acceso
             </p>
           </div>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="text-white hover:bg-white/10"
-            onClick={handleCerrarSesion}
-          >
-            Cerrar Sesión
-          </Button>
         </div>
       </header>
 
@@ -123,7 +52,7 @@ export function SeleccionUsuario() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-3 gap-6">
             {/* Card de Visitante */}
             <Card className="p-8 bg-white shadow-2xl border-none hover:shadow-3xl transition-all duration-300 hover:scale-105 cursor-pointer">
               <button
@@ -170,6 +99,31 @@ export function SeleccionUsuario() {
                   disabled={isLoading}
                 >
                   {isLoading ? "Cargando..." : "Seleccionar Estudiante"}
+                </Button>
+              </button>
+            </Card>
+
+            {/* Card de Empleado */}
+            <Card className="p-8 bg-white shadow-2xl border-none hover:shadow-3xl transition-all duration-300 hover:scale-105 cursor-pointer">
+              <button
+                onClick={() => handleSeleccion("maestro")}
+                disabled={isLoading}
+                className="w-full h-full flex flex-col items-center justify-center space-y-6 text-center"
+              >
+                <div className="w-32 h-32 bg-[#003876] rounded-full flex items-center justify-center shadow-lg">
+                  <GraduationCap className="w-16 h-16 text-white" />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-3xl font-bold text-[#003876]">Empleado</h3>
+                  <p className="text-gray-600 text-lg">
+                    Registrar entrada de empleado de la UNAH
+                  </p>
+                </div>
+                <Button
+                  className="w-full h-12 text-lg font-bold bg-[#FFC107] hover:bg-[#FFB300] text-[#003876] shadow-md"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Cargando..." : "Seleccionar Empleado"}
                 </Button>
               </button>
             </Card>

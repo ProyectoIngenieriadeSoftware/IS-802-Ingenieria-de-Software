@@ -1,6 +1,7 @@
 "use client"
-import {SeleccionUsuario} from "@/components/seleccionar-usuario"
+
+import EmpleadoLogin from "@/components/empleado-login"
 
 export default function SeleccionUsuarioPage() {
-  return <SeleccionUsuario />
+  return <EmpleadoLogin />
 }

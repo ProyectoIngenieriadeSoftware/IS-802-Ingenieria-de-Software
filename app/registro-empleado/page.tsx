@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { EntryRegistration } from "@/components/entry-registration";
 
-export default function EntryRegistrationPage() {
+export default function RegistroEmpleadoPage() {
   const router = useRouter();
 
   const handleBack = () => {
@@ -20,6 +20,8 @@ export default function EntryRegistrationPage() {
         userData={{}}
         onBack={handleBack}
         onComplete={handleComplete}
+        idLabel="Número de Empleado"
+        idPlaceholder="Ingrese su número de empleado"
       />
     </main>
   );

@@ -20,6 +20,8 @@ interface EntryRegistrationProps {
   userData: any // Datos del usuario (pasados desde el componente padre)
   onBack: () => void // Función para volver atrás
   onComplete: () => void // Función llamada cuando el registro se completa
+  idLabel?: string // Etiqueta del campo de identificación (default: "Número de Cuenta")
+  idPlaceholder?: string // Placeholder del campo de identificación
 }
 
 // Función para obtener el periodo actual basado en la fecha
@@ -84,7 +86,7 @@ function getDefaultEntryTime(): string {
 }
 
 // Componente principal para el registro de entrada
-export function EntryRegistration({ userData, onBack, onComplete }: EntryRegistrationProps) {
+export function EntryRegistration({ userData, onBack, onComplete, idLabel = "Número de Cuenta", idPlaceholder = "Ingrese su número de cuenta" }: EntryRegistrationProps) {
   const initialPeriod = useMemo(() => {
     // Determina el periodo inicial basado en los roles del usuario
     if (userData.roles && !userData.roles.includes("visitante")) {
@@ -102,6 +104,7 @@ export function EntryRegistration({ userData, onBack, onComplete }: EntryRegistr
     return null
   }, [userData.hasPhoto, userData.photoBase64])
 
+  const [numeroCuenta, setNumeroCuenta] = useState("") // Número de cuenta del estudiante
   const [entryMethod, setEntryMethod] = useState<"peatonal" | "vehicular" | null>(null) // Método de entrada seleccionado
   const [showVehicleRegistration, setShowVehicleRegistration] = useState(false) // Estado para mostrar el registro de vehículo
   const [vehicleData, setVehicleData] = useState<any>(null) // Datos del vehículo
@@ -298,9 +301,26 @@ if (showVehicleRegistration) {
           <div className="space-y-8">
             <div>
               <h2 className="text-3xl font-bold text-[#003876]">Registro de Ingreso</h2>
-              <p className="text-gray-600 mt-2">
-                {userData.name} - DNI: {userData.dni}
-              </p>
+            </div>
+
+            {/* Campo de número de cuenta */}
+            <div className="space-y-2">
+              <Label htmlFor="numeroCuenta" className="text-[#003876] font-semibold text-lg">
+                {idLabel}
+              </Label>
+              <Input
+                id="numeroCuenta"
+                type="text"
+                placeholder={idPlaceholder}
+                value={numeroCuenta}
+                onChange={(e) => setNumeroCuenta(e.target.value)}
+                className="bg-input border-border text-foreground h-12 text-lg"
+              />
+              {!numeroCuenta.trim() && (
+                <p className="text-sm text-amber-600">
+                  Debe ingresar su {idLabel.toLowerCase()} para continuar
+                </p>
+              )}
             </div>
 
             {/* Selección de método de ingreso */}
@@ -310,7 +330,8 @@ if (showVehicleRegistration) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Button
                     onClick={() => handleEntryMethodSelect("peatonal")}
-                    className="h-32 flex flex-col items-center justify-center gap-3 bg-[#003876] hover:bg-[#002855] text-white"
+                    disabled={!numeroCuenta.trim()}
+                    className="h-32 flex flex-col items-center justify-center gap-3 bg-[#003876] hover:bg-[#002855] text-white disabled:opacity-50 disabled:cursor-not-allowed"
                     tabIndex={1}
                   >
                     <UserIcon className="w-12 h-12" />
@@ -318,7 +339,8 @@ if (showVehicleRegistration) {
                   </Button>
                   <Button
                     onClick={() => handleEntryMethodSelect("vehicular")}
-                    className="h-32 flex flex-col items-center justify-center gap-3 bg-[#003876] hover:bg-[#002855] text-white"
+                    disabled={!numeroCuenta.trim()}
+                    className="h-32 flex flex-col items-center justify-center gap-3 bg-[#003876] hover:bg-[#002855] text-white disabled:opacity-50 disabled:cursor-not-allowed"
                     tabIndex={2}
                   >
                     <Car className="w-12 h-12" />
