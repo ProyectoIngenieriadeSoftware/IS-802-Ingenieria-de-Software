@@ -176,7 +176,7 @@ export function SeleccionUsuario() {
               </button>
             </Card>
 
-            {/* Card de Maestro */}
+            {/* Card de Empleado */}
             <Card className="p-8 bg-white shadow-2xl border-none hover:shadow-3xl transition-all duration-300 hover:scale-105 cursor-pointer">
               <button
                 onClick={() => handleSeleccion("maestro")}
@@ -187,16 +187,16 @@ export function SeleccionUsuario() {
                   <GraduationCap className="w-16 h-16 text-white" />
                 </div>
                 <div className="space-y-2">
-                  <h3 className="text-3xl font-bold text-[#003876]">Maestro</h3>
+                  <h3 className="text-3xl font-bold text-[#003876]">Empleado</h3>
                   <p className="text-gray-600 text-lg">
-                    Registrar entrada de maestro de la UNAH
+                    Registrar entrada de empleado de la UNAH
                   </p>
                 </div>
                 <Button
                   className="w-full h-12 text-lg font-bold bg-[#FFC107] hover:bg-[#FFB300] text-[#003876] shadow-md"
                   disabled={isLoading}
                 >
-                  {isLoading ? "Cargando..." : "Seleccionar Maestro"}
+                  {isLoading ? "Cargando..." : "Seleccionar Empleado"}
                 </Button>
               </button>
             </Card>

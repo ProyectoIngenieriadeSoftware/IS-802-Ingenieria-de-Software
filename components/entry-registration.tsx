@@ -20,6 +20,8 @@ interface EntryRegistrationProps {
   userData: any // Datos del usuario (pasados desde el componente padre)
   onBack: () => void // Función para volver atrás
   onComplete: () => void // Función llamada cuando el registro se completa
+  idLabel?: string // Etiqueta del campo de identificación (default: "Número de Cuenta")
+  idPlaceholder?: string // Placeholder del campo de identificación
 }
 
 // Función para obtener el periodo actual basado en la fecha
@@ -84,7 +86,7 @@ function getDefaultEntryTime(): string {
 }
 
 // Componente principal para el registro de entrada
-export function EntryRegistration({ userData, onBack, onComplete }: EntryRegistrationProps) {
+export function EntryRegistration({ userData, onBack, onComplete, idLabel = "Número de Cuenta", idPlaceholder = "Ingrese su número de cuenta" }: EntryRegistrationProps) {
   const initialPeriod = useMemo(() => {
     // Determina el periodo inicial basado en los roles del usuario
     if (userData.roles && !userData.roles.includes("visitante")) {
@@ -304,19 +306,19 @@ if (showVehicleRegistration) {
             {/* Campo de número de cuenta */}
             <div className="space-y-2">
               <Label htmlFor="numeroCuenta" className="text-[#003876] font-semibold text-lg">
-                Número de Cuenta
+                {idLabel}
               </Label>
               <Input
                 id="numeroCuenta"
                 type="text"
-                placeholder="Ingrese su número de cuenta"
+                placeholder={idPlaceholder}
                 value={numeroCuenta}
                 onChange={(e) => setNumeroCuenta(e.target.value)}
                 className="bg-input border-border text-foreground h-12 text-lg"
               />
               {!numeroCuenta.trim() && (
                 <p className="text-sm text-amber-600">
-                  Debe ingresar su número de cuenta para continuar
+                  Debe ingresar su {idLabel.toLowerCase()} para continuar
                 </p>
               )}
             </div>
