@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ArrowLeft, Car, UserIcon, Clock, Mail } from "lucide-react"
+import { PhotoCapture } from "@/components/photo-capture"
 
 //mi libreria de api
 import { API_URL } from "@/lib/api";
@@ -70,6 +71,7 @@ export function VisitorRegistration({ dni: initialDni, onBack, onComplete }: Vis
   const [showSummary, setShowSummary] = useState(false)
   const [entryMethod, setEntryMethod] = useState<"peatonal" | "vehicular" | null>(null)
   const [placaValidation, setPlacaValidation] = useState<{ isValid: boolean; message: string } | null>(null)
+  const [photoData, setPhotoData] = useState<string | null>(null)
 
   // Función que maneja los cambios en los campos de entrada del formulario
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -215,7 +217,17 @@ export function VisitorRegistration({ dni: initialDni, onBack, onComplete }: Vis
       }
     }
 
+    if (!photoData) {
+      alert("Por favor tome su foto para el enrolamiento facial")
+      return
+    }
+
     setShowSummary(true)
+  }
+
+  // Función para capturar la foto
+  const handlePhotoCapture = (photo: string) => {
+    setPhotoData(photo)
   }
 
   // Función que maneja el envío del formulario
@@ -780,11 +792,20 @@ export function VisitorRegistration({ dni: initialDni, onBack, onComplete }: Vis
                     </div>
                   </div>
 
+                  {/* Captura de foto para enrolamiento facial */}
+                  <div className="border-t pt-4">
+                    <h3 className="text-lg font-semibold text-[#003876] mb-2">Foto para enrolamiento facial</h3>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Tome una foto de su rostro para el registro de ingreso facial a la universidad.
+                    </p>
+                    <PhotoCapture onPhotoCapture={handlePhotoCapture} existingPhoto={null} />
+                  </div>
+
                   {/* Botón para ver resumen */}
                   <Button
                     type="submit"
                     className="w-full h-12 text-base font-bold bg-[#FFC107] hover:bg-[#FFB300] text-[#003876]"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !photoData}
                   >
                     Revisar y Confirmar Registro
                   </Button>
@@ -867,6 +888,14 @@ export function VisitorRegistration({ dni: initialDni, onBack, onComplete }: Vis
                           <p className="text-sm text-gray-900">{formData.color === "Otro" ? formData.otroColor : formData.color}</p>
                         </div>
                       </div>
+                    </div>
+                  )}
+
+                  {/* Foto en el resumen */}
+                  {photoData && (
+                    <div className="border-t pt-3 mt-3">
+                      <p className="text-xs text-gray-500 font-medium mb-2">Foto de enrolamiento facial</p>
+                      <img src={photoData} alt="Foto de enrolamiento" className="w-32 h-32 object-cover rounded-lg border border-gray-200" />
                     </div>
                   )}
                 </div>
