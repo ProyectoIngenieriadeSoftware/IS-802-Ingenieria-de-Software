@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { UserCheck, Users } from "lucide-react"
+import { UserCheck, Users, GraduationCap } from "lucide-react"
 
 /**
  * Componente para seleccionar el tipo de usuario a registrar
@@ -41,7 +41,7 @@ export function SeleccionUsuario() {
   /**
    * Maneja la selección de tipo de usuario
    */
-  const handleSeleccion = (tipo: "visitante" | "estudiante") => {
+  const handleSeleccion = (tipo: "visitante" | "estudiante" | "maestro") => {
     setIsLoading(true)
     const sid = searchParams.get("sid")
 
@@ -72,6 +72,8 @@ export function SeleccionUsuario() {
     // Redirigir según la selección
     if (tipo === "visitante") {
       router.push(`/registro-visita?sid=${sid}`)
+    } else if (tipo === "maestro") {
+      router.push(`/registro-maestro?sid=${sid}`)
     } else {
       router.push(`/registro-entrada?sid=${sid}`)
     }
@@ -123,7 +125,7 @@ export function SeleccionUsuario() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-3 gap-6">
             {/* Card de Visitante */}
             <Card className="p-8 bg-white shadow-2xl border-none hover:shadow-3xl transition-all duration-300 hover:scale-105 cursor-pointer">
               <button
@@ -170,6 +172,31 @@ export function SeleccionUsuario() {
                   disabled={isLoading}
                 >
                   {isLoading ? "Cargando..." : "Seleccionar Estudiante"}
+                </Button>
+              </button>
+            </Card>
+
+            {/* Card de Maestro */}
+            <Card className="p-8 bg-white shadow-2xl border-none hover:shadow-3xl transition-all duration-300 hover:scale-105 cursor-pointer">
+              <button
+                onClick={() => handleSeleccion("maestro")}
+                disabled={isLoading}
+                className="w-full h-full flex flex-col items-center justify-center space-y-6 text-center"
+              >
+                <div className="w-32 h-32 bg-[#003876] rounded-full flex items-center justify-center shadow-lg">
+                  <GraduationCap className="w-16 h-16 text-white" />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-3xl font-bold text-[#003876]">Maestro</h3>
+                  <p className="text-gray-600 text-lg">
+                    Registrar entrada de maestro de la UNAH
+                  </p>
+                </div>
+                <Button
+                  className="w-full h-12 text-lg font-bold bg-[#FFC107] hover:bg-[#FFB300] text-[#003876] shadow-md"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Cargando..." : "Seleccionar Maestro"}
                 </Button>
               </button>
             </Card>
