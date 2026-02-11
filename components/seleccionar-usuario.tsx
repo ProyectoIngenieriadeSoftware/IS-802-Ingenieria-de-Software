@@ -5,7 +5,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { UserCheck, Users, GraduationCap } from "lucide-react"
+import { UserCheck, Users, GraduationCap, Shield } from "lucide-react"
 
 /**
  * Componente para seleccionar el tipo de usuario a registrar
@@ -37,6 +37,15 @@ export function SeleccionUsuario() {
               Sistema de Control de Acceso
             </p>
           </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push("/admin")}
+            className="bg-transparent border-[#FFC107] text-[#FFC107] hover:bg-[#FFC107] hover:text-[#003876] font-semibold"
+          >
+            <Shield className="w-4 h-4 mr-2" />
+            Administrador
+          </Button>
         </div>
       </header>
 
