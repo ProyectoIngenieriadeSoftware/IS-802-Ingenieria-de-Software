@@ -73,7 +73,7 @@ export function SeleccionUsuario() {
     if (tipo === "visitante") {
       router.push(`/registro-visita?sid=${sid}`)
     } else if (tipo === "maestro") {
-      router.push(`/registro-maestro?sid=${sid}`)
+      router.push(`/registro-empleado?sid=${sid}`)
     } else {
       router.push(`/registro-entrada?sid=${sid}`)
     }
