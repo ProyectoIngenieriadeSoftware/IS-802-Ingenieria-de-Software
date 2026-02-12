@@ -1,7 +1,7 @@
 "use client"
 
-import EmpleadoLogin from "@/components/empleado-login"
+import PanelAdmin from "@/components/panel-admin"
 
 export default function AdminPage() {
-  return <EmpleadoLogin />
+  return <PanelAdmin />
 }
