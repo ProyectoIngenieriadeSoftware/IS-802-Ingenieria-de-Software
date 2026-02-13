@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ArrowLeft } from "lucide-react"
+import { PhotoCapture } from "@/components/photo-capture"
 
 //libreria api
 import { API_URL } from "@/lib/api";
@@ -61,6 +62,7 @@ export function VehicleRegistration({ onBack, onComplete, dni }: VehicleRegistra
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [placaValidation, setPlacaValidation] = useState<{ isValid: boolean; message: string } | null>(null)
+  const [photoData, setPhotoData] = useState<string | null>(null)
 
   /**
    * Maneja el cambio en el input de placa
@@ -412,12 +414,21 @@ db: vehiculoData
                 </div>
               )}
 
+              {/* Captura de foto para enrolamiento facial */}
+              <div className="space-y-2 border-t pt-4">
+                <h3 className="text-lg font-semibold text-[#003876]">Foto para enrolamiento facial</h3>
+                <p className="text-sm text-gray-600 mb-2">
+                  Tome una foto de su rostro para el registro de ingreso facial a la universidad.
+                </p>
+                <PhotoCapture onPhotoCapture={(photo) => setPhotoData(photo)} existingPhoto={null} />
+              </div>
+
               {/* Botón de registro con colores institucionales */}
               <div className="pt-4">
                 <Button
                   type="submit"
                   className="w-full h-12 text-base font-bold bg-[#FFC107] hover:bg-[#FFB300] text-[#003876]"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !photoData}
                   tabIndex={8}
                 >
                   {isSubmitting ? "Registrando vehículo..." : "Registrar Vehículo"}

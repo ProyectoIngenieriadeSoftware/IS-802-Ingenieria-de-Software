@@ -7,11 +7,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { AlertCircle, User, Lock } from "lucide-react"
+import { AlertCircle, User, Lock, Shield, ArrowLeft } from "lucide-react"
 import { API_URL } from "@/lib/api"
 
 /**
- * Componente de login para empleados de la UNAH
+ * Componente de login para administradores de la UNAH
  * Permite autenticación con número de cuenta y contraseña
  */
 export default function EmpleadoLogin() {
@@ -69,11 +69,12 @@ export default function EmpleadoLogin() {
       `session_${sid}`,
       JSON.stringify({
         numero_cuenta: numeroCuenta,
-        nombre: "Empleado Demo", // Nombre temporal
+        nombre: "Administrador",
+        rol: "admin",
       })
     )
 
-    // Redirigir directamente a selección de tipo de usuario
+    // Redirigir al panel de administración
     router.push(`/seleccion-usuario?sid=${sid}`)
 
     setIsLoading(false)
@@ -101,10 +102,11 @@ export default function EmpleadoLogin() {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-white">Ingreso UNAH</h1>
-            <p className="text-sm text-[#FFC107]">Portal de Empleados</p>
+            <p className="text-sm text-[#FFC107]">Portal de Administración</p>
           </div>
-          <Button variant="ghost" size="sm" className="text-white hover:bg-white/10">
-            Inicio
+          <Button variant="ghost" size="sm" onClick={() => router.push("/")} className="text-white hover:bg-white/10">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Volver
           </Button>
         </div>
       </header>
@@ -116,12 +118,12 @@ export default function EmpleadoLogin() {
             <div className="space-y-3 text-center">
               <div className="flex justify-center mb-4">
                 <div className="w-20 h-20 bg-[#003876] rounded-full flex items-center justify-center">
-                  <User className="w-10 h-10 text-white" />
+                  <Shield className="w-10 h-10 text-white" />
                 </div>
               </div>
-              <h2 className="text-4xl font-bold text-[#003876]">Acceso de Empleados</h2>
+              <h2 className="text-4xl font-bold text-[#003876]">Acceso Administrador</h2>
               <p className="text-lg text-gray-600">
-                Ingresa con tu número de cuenta y contraseña
+                Ingresa con tus credenciales de administrador
               </p>
             </div>
 
@@ -140,7 +142,7 @@ export default function EmpleadoLogin() {
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                   <Input
                     type="text"
-                    placeholder="Número de cuenta"
+                    placeholder="Número de empleado"
                     value={numeroCuenta}
                     onChange={handleNumeroCuentaChange}
                     className="h-14 text-lg pl-12 bg-white border-2 border-gray-300 focus:border-[#003876] focus:ring-[#003876] text-gray-900 placeholder:text-gray-400"
@@ -149,7 +151,6 @@ export default function EmpleadoLogin() {
                     tabIndex={1}
                   />
                 </div>
-                <p className="text-xs text-gray-500">Ejemplo: 20241234567</p>
               </div>
 
               {/* Campo de contraseña */}
