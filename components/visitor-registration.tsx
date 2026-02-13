@@ -145,12 +145,12 @@ const handleSubmit = async (e: React.FormEvent) => {
 
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F5F5F5]">
-      <header className="bg-[#003876] shadow-md">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#003876] via-[#004494] to-[#003876]">
+      <header className="bg-[#003876] border-b border-[#FFC107]/20 shadow-md">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-white">SISTEMA DE INGRESO</h1>
-            <p className="text-sm text-[#FFC107]">Universidad Nacional Autónoma de Honduras</p>
+            <h1 className="text-2xl font-bold text-white">Ingreso UNAH</h1>
+            <p className="text-sm text-[#FFC107]">Sistema de Control de Acceso</p>
           </div>
           {/* Botón para volver al paso anterior */}
           <Button variant="ghost" size="sm" onClick={onBack} className="text-white hover:bg-white/10">
@@ -161,7 +161,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       </header>
 
       <div className="flex-1 flex items-center justify-center p-4">
-        <Card className="w-full max-w-2xl p-8 bg-white shadow-lg">
+        <Card className="w-full max-w-2xl p-8 bg-white shadow-2xl border-none">
           <div className="space-y-6">
             <div className="space-y-2">
               {/* Título del formulario */}
@@ -333,7 +333,7 @@ const handleSubmit = async (e: React.FormEvent) => {
         </Card>
       </div>
 
-      <footer className="bg-[#003876] py-3">
+      <footer className="bg-[#003876] border-t border-[#FFC107]/20 py-3">
         <p className="text-sm text-white text-center">© 2025 UNAH - Sistema de Control de Acceso</p>
       </footer>
     </div>

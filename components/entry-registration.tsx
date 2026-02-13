@@ -197,13 +197,117 @@ if (showVehicleRegistration) {
 
 
   // Renderizado del formulario principal
+  // Si aún no eligió método, mostrar pantalla completa de selección estilo cards
+  if (!entryMethod) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#003876] via-[#004494] to-[#003876]">
+        <header className="bg-[#003876] border-b border-[#FFC107]/20 shadow-md">
+          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-white">Ingreso UNAH</h1>
+              <p className="text-sm text-[#FFC107]">Sistema de Control de Acceso</p>
+            </div>
+            <Button variant="ghost" size="sm" onClick={onBack} className="text-white hover:bg-white/10">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Volver
+            </Button>
+          </div>
+        </header>
+
+        <div className="flex-1 flex items-center justify-center p-4">
+          <div className="w-full max-w-4xl">
+            <div className="text-center mb-8">
+              <h2 className="text-4xl font-bold text-white mb-3">Registro de Ingreso</h2>
+              <p className="text-xl text-white/80">Seleccione su método de ingreso</p>
+            </div>
+
+            {/* Campo de número de cuenta */}
+            <div className="max-w-md mx-auto mb-8">
+              <Card className="p-6 bg-white shadow-lg">
+                <Label htmlFor="numeroCuenta" className="text-[#003876] font-semibold text-lg">
+                  {idLabel}
+                </Label>
+                <Input
+                  id="numeroCuenta"
+                  type="text"
+                  placeholder={idPlaceholder}
+                  value={numeroCuenta}
+                  onChange={(e) => setNumeroCuenta(e.target.value)}
+                  className="mt-2 h-12 text-lg border-2 border-gray-300 focus:border-[#003876] focus:ring-[#003876]"
+                />
+                {!numeroCuenta.trim() && (
+                  <p className="text-sm text-amber-600 mt-1">
+                    Debe ingresar su {idLabel.toLowerCase()} para continuar
+                  </p>
+                )}
+              </Card>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Card Peatonal */}
+              <Card className={`p-8 bg-white shadow-2xl border-none transition-all duration-300 ${numeroCuenta.trim() ? "hover:shadow-3xl hover:scale-105 cursor-pointer" : "opacity-60"}`}>
+                <button
+                  onClick={() => handleEntryMethodSelect("peatonal")}
+                  disabled={!numeroCuenta.trim()}
+                  className="w-full h-full flex flex-col items-center justify-center space-y-6 text-center disabled:cursor-not-allowed"
+                >
+                  <div className="w-32 h-32 bg-[#003876] rounded-full flex items-center justify-center shadow-lg">
+                    <UserIcon className="w-16 h-16 text-white" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-3xl font-bold text-[#003876]">Ingreso Peatonal</h3>
+                    <p className="text-gray-600 text-lg">Ingreso a pie por las entradas peatonales</p>
+                  </div>
+                  <Button
+                    className="w-full h-12 text-lg font-bold bg-[#FFC107] hover:bg-[#FFB300] text-[#003876] shadow-md"
+                    disabled={!numeroCuenta.trim()}
+                  >
+                    Seleccionar
+                  </Button>
+                </button>
+              </Card>
+
+              {/* Card Vehicular */}
+              <Card className={`p-8 bg-white shadow-2xl border-none transition-all duration-300 ${numeroCuenta.trim() ? "hover:shadow-3xl hover:scale-105 cursor-pointer" : "opacity-60"}`}>
+                <button
+                  onClick={() => handleEntryMethodSelect("vehicular")}
+                  disabled={!numeroCuenta.trim()}
+                  className="w-full h-full flex flex-col items-center justify-center space-y-6 text-center disabled:cursor-not-allowed"
+                >
+                  <div className="w-32 h-32 bg-[#003876] rounded-full flex items-center justify-center shadow-lg">
+                    <Car className="w-16 h-16 text-white" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-3xl font-bold text-[#003876]">Ingreso Vehicular</h3>
+                    <p className="text-gray-600 text-lg">Ingreso en vehículo por las entradas vehiculares</p>
+                  </div>
+                  <Button
+                    className="w-full h-12 text-lg font-bold bg-[#FFC107] hover:bg-[#FFB300] text-[#003876] shadow-md"
+                    disabled={!numeroCuenta.trim()}
+                  >
+                    Seleccionar
+                  </Button>
+                </button>
+              </Card>
+            </div>
+          </div>
+        </div>
+
+        <footer className="bg-[#003876] border-t border-[#FFC107]/20 py-3">
+          <p className="text-sm text-white text-center">© 2025 UNAH - Sistema de Control de Acceso</p>
+        </footer>
+      </div>
+    )
+  }
+
+  // Renderizado del formulario después de elegir método
   return (
-    <div className="min-h-screen flex flex-col bg-[#F5F5F5]">
-      <header className="bg-[#003876] shadow-md">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#003876] via-[#004494] to-[#003876]">
+      <header className="bg-[#003876] border-b border-[#FFC107]/20 shadow-md">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-white">SISTEMA DE INGRESO</h1>
-            <p className="text-sm text-[#FFC107]">Universidad Nacional Autónoma de Honduras</p>
+            <h1 className="text-2xl font-bold text-white">Ingreso UNAH</h1>
+            <p className="text-sm text-[#FFC107]">Sistema de Control de Acceso</p>
           </div>
           <Button variant="ghost" size="sm" onClick={onBack} className="text-white hover:bg-white/10">
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -213,61 +317,13 @@ if (showVehicleRegistration) {
       </header>
 
       <div className="flex-1 flex items-center justify-center p-4">
-        <Card className="w-full max-w-3xl p-8 md:p-12 bg-white shadow-lg">
+        <Card className="w-full max-w-3xl p-8 md:p-12 bg-white shadow-2xl border-none">
           <div className="space-y-8">
             <div>
               <h2 className="text-3xl font-bold text-[#003876]">Registro de Ingreso</h2>
             </div>
 
-            {/* Campo de número de cuenta */}
-            <div className="space-y-2">
-              <Label htmlFor="numeroCuenta" className="text-[#003876] font-semibold text-lg">
-                {idLabel}
-              </Label>
-              <Input
-                id="numeroCuenta"
-                type="text"
-                placeholder={idPlaceholder}
-                value={numeroCuenta}
-                onChange={(e) => setNumeroCuenta(e.target.value)}
-                className="bg-input border-border text-foreground h-12 text-lg"
-              />
-              {!numeroCuenta.trim() && (
-                <p className="text-sm text-amber-600">
-                  Debe ingresar su {idLabel.toLowerCase()} para continuar
-                </p>
-              )}
-            </div>
-
-            {/* Selección de método de ingreso */}
-            {!entryMethod && (
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-[#003876]">Seleccione método de ingreso</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Button
-                    onClick={() => handleEntryMethodSelect("peatonal")}
-                    disabled={!numeroCuenta.trim()}
-                    className="h-32 flex flex-col items-center justify-center gap-3 bg-[#003876] hover:bg-[#002855] text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                    tabIndex={1}
-                  >
-                    <UserIcon className="w-12 h-12" />
-                    <span className="text-lg font-medium">Ingreso Peatonal</span>
-                  </Button>
-                  <Button
-                    onClick={() => handleEntryMethodSelect("vehicular")}
-                    disabled={!numeroCuenta.trim()}
-                    className="h-32 flex flex-col items-center justify-center gap-3 bg-[#003876] hover:bg-[#002855] text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                    tabIndex={2}
-                  >
-                    <Car className="w-12 h-12" />
-                    <span className="text-lg font-medium">Ingreso Vehicular</span>
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {/* Mostrar detalles del ingreso según el método seleccionado */}
-            {entryMethod && (
+            {/* Detalles del ingreso */}
               <div className="space-y-6">
                 <div className="flex items-center justify-between p-4 bg-gray-100 rounded-lg">
                   <div className="flex items-center gap-2">
@@ -421,7 +477,7 @@ if (showVehicleRegistration) {
         </Card>
       </div>
 
-      <footer className="bg-[#003876] py-3">
+      <footer className="bg-[#003876] border-t border-[#FFC107]/20 py-3">
         <p className="text-sm text-white text-center">© 2025 UNAH - Sistema de Control de Acceso</p>
       </footer>
     </div>
