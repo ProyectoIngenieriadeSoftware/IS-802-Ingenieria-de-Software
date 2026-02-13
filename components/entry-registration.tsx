@@ -472,7 +472,6 @@ if (showVehicleRegistration) {
                   {isSubmitting ? "Registrando ingreso..." : "Completar Registro"}
                 </Button>
               </div>
-            )}
           </div>
         </Card>
       </div>
