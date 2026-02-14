@@ -18,14 +18,14 @@ import { API_URL } from "@/lib/api";
 
 // Definición de las propiedades que recibe el componente
 interface VisitorRegistrationProps {
-  dni: string // DNI del visitante
   onBack: () => void // Función para regresar al paso anterior
   onComplete: (visitorData: any) => void // Función llamada cuando el registro del visitante se complete
 }
 
-export function VisitorRegistration({ dni, onBack, onComplete }: VisitorRegistrationProps) {
+export function VisitorRegistration({ onBack, onComplete }: VisitorRegistrationProps) {
   // Estado que maneja los datos del formulario
   const [formData, setFormData] = useState({
+    dni: "",
     nombre: "",
     apellido: "",
     email: "",
@@ -81,7 +81,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       body: JSON.stringify({
         Nombre: formData.nombre,
         Apellido: formData.apellido,
-        DNI: dni,
+        DNI: formData.dni,
         Email: formData.email,
         Telefono: formData.telefono
       })
@@ -121,7 +121,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     const visita = await visitaRes.json();
 
    onComplete({
-  dni,
+  dni: formData.dni,
   name: formData.nombre,
   apellido: formData.apellido,
   tipoVisita: finalTipoVisita,
@@ -167,12 +167,30 @@ const handleSubmit = async (e: React.FormEvent) => {
               {/* Título del formulario */}
               <h2 className="text-2xl font-bold text-[#003876]">Registro de Visita</h2>
               <p className="text-gray-600">
-                DNI <span className="font-mono font-medium">{dni}</span> no registrado. Complete el formulario.
+                Complete el formulario para registrar su visita.
               </p>
             </div>
 
             {/* Formulario de registro */}
             <form onSubmit={handleSubmit} className="space-y-4">
+              {/* DNI del visitante */}
+              <div className="space-y-2">
+                <Label htmlFor="dni" className="text-[#003876] font-medium">
+                  Número de Identidad (DNI) *
+                </Label>
+                <Input
+                  id="dni"
+                  name="dni"
+                  type="text"
+                  value={formData.dni}
+                  onChange={handleInputChange}
+                  required
+                  className="border-gray-300 focus:border-[#003876] focus:ring-[#003876]"
+                  placeholder="Ingrese su número de identidad"
+                  disabled={isSubmitting}
+                />
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="nombre" className="text-[#003876] font-medium">

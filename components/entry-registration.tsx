@@ -221,35 +221,12 @@ if (showVehicleRegistration) {
               <p className="text-xl text-white/80">Seleccione su método de ingreso</p>
             </div>
 
-            {/* Campo de número de cuenta */}
-            <div className="max-w-md mx-auto mb-8">
-              <Card className="p-6 bg-white shadow-lg">
-                <Label htmlFor="numeroCuenta" className="text-[#003876] font-semibold text-lg">
-                  {idLabel}
-                </Label>
-                <Input
-                  id="numeroCuenta"
-                  type="text"
-                  placeholder={idPlaceholder}
-                  value={numeroCuenta}
-                  onChange={(e) => setNumeroCuenta(e.target.value)}
-                  className="mt-2 h-12 text-lg border-2 border-gray-300 focus:border-[#003876] focus:ring-[#003876]"
-                />
-                {!numeroCuenta.trim() && (
-                  <p className="text-sm text-amber-600 mt-1">
-                    Debe ingresar su {idLabel.toLowerCase()} para continuar
-                  </p>
-                )}
-              </Card>
-            </div>
-
             <div className="grid md:grid-cols-2 gap-6">
               {/* Card Peatonal */}
-              <Card className={`p-8 bg-white shadow-2xl border-none transition-all duration-300 ${numeroCuenta.trim() ? "hover:shadow-3xl hover:scale-105 cursor-pointer" : "opacity-60"}`}>
+              <Card className="p-8 bg-white shadow-2xl border-none transition-all duration-300 hover:shadow-3xl hover:scale-105 cursor-pointer">
                 <button
                   onClick={() => handleEntryMethodSelect("peatonal")}
-                  disabled={!numeroCuenta.trim()}
-                  className="w-full h-full flex flex-col items-center justify-center space-y-6 text-center disabled:cursor-not-allowed"
+                  className="w-full h-full flex flex-col items-center justify-center space-y-6 text-center"
                 >
                   <div className="w-32 h-32 bg-[#003876] rounded-full flex items-center justify-center shadow-lg">
                     <UserIcon className="w-16 h-16 text-white" />
@@ -258,21 +235,17 @@ if (showVehicleRegistration) {
                     <h3 className="text-3xl font-bold text-[#003876]">Ingreso Peatonal</h3>
                     <p className="text-gray-600 text-lg">Ingreso a pie por las entradas peatonales</p>
                   </div>
-                  <Button
-                    className="w-full h-12 text-lg font-bold bg-[#FFC107] hover:bg-[#FFB300] text-[#003876] shadow-md"
-                    disabled={!numeroCuenta.trim()}
-                  >
+                  <Button className="w-full h-12 text-lg font-bold bg-[#FFC107] hover:bg-[#FFB300] text-[#003876] shadow-md">
                     Seleccionar
                   </Button>
                 </button>
               </Card>
 
               {/* Card Vehicular */}
-              <Card className={`p-8 bg-white shadow-2xl border-none transition-all duration-300 ${numeroCuenta.trim() ? "hover:shadow-3xl hover:scale-105 cursor-pointer" : "opacity-60"}`}>
+              <Card className="p-8 bg-white shadow-2xl border-none transition-all duration-300 hover:shadow-3xl hover:scale-105 cursor-pointer">
                 <button
                   onClick={() => handleEntryMethodSelect("vehicular")}
-                  disabled={!numeroCuenta.trim()}
-                  className="w-full h-full flex flex-col items-center justify-center space-y-6 text-center disabled:cursor-not-allowed"
+                  className="w-full h-full flex flex-col items-center justify-center space-y-6 text-center"
                 >
                   <div className="w-32 h-32 bg-[#003876] rounded-full flex items-center justify-center shadow-lg">
                     <Car className="w-16 h-16 text-white" />
@@ -281,10 +254,7 @@ if (showVehicleRegistration) {
                     <h3 className="text-3xl font-bold text-[#003876]">Ingreso Vehicular</h3>
                     <p className="text-gray-600 text-lg">Ingreso en vehículo por las entradas vehiculares</p>
                   </div>
-                  <Button
-                    className="w-full h-12 text-lg font-bold bg-[#FFC107] hover:bg-[#FFB300] text-[#003876] shadow-md"
-                    disabled={!numeroCuenta.trim()}
-                  >
+                  <Button className="w-full h-12 text-lg font-bold bg-[#FFC107] hover:bg-[#FFB300] text-[#003876] shadow-md">
                     Seleccionar
                   </Button>
                 </button>
@@ -325,6 +295,21 @@ if (showVehicleRegistration) {
 
             {/* Detalles del ingreso */}
               <div className="space-y-6">
+                {/* Campo de número de cuenta */}
+                <div className="space-y-2">
+                  <Label htmlFor="numeroCuenta" className="text-[#003876] font-semibold text-lg">
+                    {idLabel} *
+                  </Label>
+                  <Input
+                    id="numeroCuenta"
+                    type="text"
+                    placeholder={idPlaceholder}
+                    value={numeroCuenta}
+                    onChange={(e) => setNumeroCuenta(e.target.value)}
+                    className="h-12 text-lg border-2 border-gray-300 focus:border-[#003876] focus:ring-[#003876]"
+                  />
+                </div>
+
                 <div className="flex items-center justify-between p-4 bg-gray-100 rounded-lg">
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-gray-600">Método de ingreso:</span>
