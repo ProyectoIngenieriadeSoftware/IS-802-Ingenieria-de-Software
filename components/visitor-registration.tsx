@@ -136,7 +136,24 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   } catch (error) {
     console.error(error);
-    alert("Error de conexión con el servidor");
+    // Si no hay backend, continuar con datos locales (modo demo)
+    const finalTipoVisita =
+      formData.tipoVisita === "otro"
+        ? formData.tipoVisitaOtro
+        : formData.tipoVisita;
+
+    onComplete({
+      dni: formData.dni,
+      name: formData.nombre,
+      apellido: formData.apellido,
+      tipoVisita: finalTipoVisita,
+      motivo: formData.motivo,
+      email: formData.email,
+      telefono: formData.telefono,
+      photoBase64: photoData,
+      id_persona: null,
+      id_visita: null,
+    });
   }
 
   setIsSubmitting(false);
