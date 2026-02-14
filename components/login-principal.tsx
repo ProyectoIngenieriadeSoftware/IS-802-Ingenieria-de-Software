@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { AlertCircle, User, Lock, Users, UserPlus } from "lucide-react"
+import { AlertCircle, User, Lock, Users, UserPlus, Shield } from "lucide-react"
 import { API_URL } from "@/lib/api"
 
 /**
@@ -228,6 +228,65 @@ export default function LoginPrincipal() {
               >
                 <Users className="w-5 h-5 mr-2" />
                 Ingreso como Visitante
+              </Button>
+            </div>
+
+            {/* Separador modo demo */}
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-white px-2 text-gray-500">modo demo (sin base de datos)</span>
+              </div>
+            </div>
+
+            {/* Botones de acceso demo */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <Button
+                variant="outline"
+                className="h-12 text-base font-semibold border-2 border-green-600 text-green-700 hover:bg-green-600 hover:text-white"
+                onClick={() => {
+                  const sid = Math.random().toString(36).substring(2, 15)
+                  sessionStorage.setItem(
+                    `session_${sid}`,
+                    JSON.stringify({
+                      numero_cuenta: "DEMO-SEG-001",
+                      nombre: "Guardia",
+                      apellido: "Demo",
+                      rol: "seguridad",
+                      dni: "0000000000001",
+                    })
+                  )
+                  router.push(`/seguridad?sid=${sid}`)
+                }}
+                disabled={isLoading}
+              >
+                <Shield className="w-5 h-5 mr-2" />
+                Entrar como Seguridad
+              </Button>
+
+              <Button
+                variant="outline"
+                className="h-12 text-base font-semibold border-2 border-purple-600 text-purple-700 hover:bg-purple-600 hover:text-white"
+                onClick={() => {
+                  const sid = Math.random().toString(36).substring(2, 15)
+                  sessionStorage.setItem(
+                    `session_${sid}`,
+                    JSON.stringify({
+                      numero_cuenta: "DEMO-ADM-001",
+                      nombre: "Administrador",
+                      apellido: "Demo",
+                      rol: "administrador",
+                      dni: "0000000000002",
+                    })
+                  )
+                  router.push(`/admin?sid=${sid}`)
+                }}
+                disabled={isLoading}
+              >
+                <Shield className="w-5 h-5 mr-2" />
+                Entrar como Admin
               </Button>
             </div>
           </div>
