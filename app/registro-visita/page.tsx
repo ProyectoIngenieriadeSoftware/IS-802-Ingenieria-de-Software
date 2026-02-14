@@ -73,7 +73,6 @@ export default function VisitorRegistrationPage() {
     return (
       <main className="min-h-screen">
         <VisitorRegistration
-          dni=""
           onBack={() => { setShowVisitorForm(false); setEntryMethod(null) }}
           onComplete={handleComplete}
         />
