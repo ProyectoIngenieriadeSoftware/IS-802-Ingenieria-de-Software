@@ -207,7 +207,14 @@ db: vehiculoData
 
   } catch (error) {
     console.error(error);
-    alert("Error conectando con el servidor");
+    // Si no hay backend, continuar con datos locales (modo demo)
+    onComplete({
+      placa: formData.placa,
+      marca: formData.marca === "Otro" ? formData.otraMarca : formData.marca,
+      modelo: formData.modelo === "Otro" ? formData.otroModelo : formData.modelo,
+      color: formData.color === "Otro" ? formData.otroColor : formData.color,
+      db: null,
+    });
   }
 
   setIsSubmitting(false);
@@ -217,13 +224,13 @@ db: vehiculoData
     formData.marca && formData.marca !== "Otro" ? [...MODELOS_POR_MARCA[formData.marca], "Otro"] : ["Otro"]
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F5F5F5]">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#003876] via-[#004494] to-[#003876]">
       {/* Header con navegación */}
-      <header className="bg-[#003876] shadow-md">
+      <header className="bg-[#003876] border-b border-[#FFC107]/20 shadow-md">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-white">SISTEMA DE INGRESO</h1>
-            <p className="text-sm text-[#FFC107]">Universidad Nacional Autónoma de Honduras</p>
+            <h1 className="text-2xl font-bold text-white">Ingreso UNAH</h1>
+            <p className="text-sm text-[#FFC107]">Sistema de Control de Acceso</p>
           </div>
           <Button variant="ghost" size="sm" onClick={onBack} className="text-white hover:bg-white/10">
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -234,7 +241,7 @@ db: vehiculoData
 
       {/* Formulario de registro de vehículo */}
       <div className="flex-1 flex items-center justify-center p-4">
-        <Card className="w-full max-w-2xl p-8 bg-white shadow-lg">
+        <Card className="w-full max-w-2xl p-8 bg-white shadow-2xl border-none">
           <div className="space-y-6">
             <div className="space-y-2">
               <h2 className="text-2xl font-bold text-[#003876]">Registrar Vehículo</h2>
@@ -440,7 +447,7 @@ db: vehiculoData
       </div>
 
       {/* Footer institucional */}
-      <footer className="bg-[#003876] py-3">
+      <footer className="bg-[#003876] border-t border-[#FFC107]/20 py-3">
         <p className="text-sm text-white text-center">© 2025 UNAH - Sistema de Control de Acceso</p>
       </footer>
     </div>
