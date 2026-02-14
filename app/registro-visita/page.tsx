@@ -6,20 +6,16 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { ArrowLeft, Car, UserIcon } from "lucide-react"
 import { VisitorRegistration } from "@/components/visitor-registration"
-import { VehicleRegistration } from "@/components/vehicle-registration"
 
 /**
  * Página de registro de visitante
  * Paso 1: Elegir entre ingreso peatonal o vehicular
- * Paso 2: Formulario de visitante (+ vehículo si es vehicular)
+ * Paso 2: Formulario unificado de visitante (+ vehículo si es vehicular)
  */
 export default function VisitorRegistrationPage() {
   const router = useRouter()
   const [entryMethod, setEntryMethod] = useState<"peatonal" | "vehicular" | null>(null)
   const [showVisitorForm, setShowVisitorForm] = useState(false)
-  const [vehicleData, setVehicleData] = useState<any>(null)
-  const [showVehicleForm, setShowVehicleForm] = useState(false)
-  const [dni, setDni] = useState("")
 
   const handleBack = () => router.push("/")
 
@@ -29,7 +25,7 @@ export default function VisitorRegistrationPage() {
     setShowVisitorForm(true)
   }
 
-  // Cuando elige vehicular, ir primero al formulario de visitante (que incluirá vehículo después)
+  // Cuando elige vehicular, ir al formulario unificado (visitante + vehículo)
   const handleVehicular = () => {
     setEntryMethod("vehicular")
     setShowVisitorForm(true)
@@ -37,44 +33,18 @@ export default function VisitorRegistrationPage() {
 
   const handleComplete = (visitorData: any) => {
     console.log("Registro de visitante completado:", visitorData)
-
-    // Si es vehicular y no tiene vehículo registrado, mostrar registro de vehículo
-    if (entryMethod === "vehicular" && !vehicleData) {
-      setDni(visitorData.dni || "")
-      setShowVisitorForm(false)
-      setShowVehicleForm(true)
-      return
-    }
-
     alert("Registro de visita completado exitosamente")
     router.push("/")
   }
 
-  const handleVehicleComplete = (vehicle: any) => {
-    setVehicleData(vehicle)
-    setShowVehicleForm(false)
-    alert("Registro de visita e ingreso vehicular completado exitosamente")
-    router.push("/")
-  }
-
-  // Mostrar formulario de registro de vehículo
-  if (showVehicleForm) {
-    return (
-      <VehicleRegistration
-        onBack={() => { setShowVehicleForm(false); setShowVisitorForm(true) }}
-        onComplete={handleVehicleComplete}
-        dni={dni}
-      />
-    )
-  }
-
-  // Mostrar formulario de visitante
+  // Mostrar formulario unificado de visitante (incluye vehículo si es vehicular)
   if (showVisitorForm) {
     return (
       <main className="min-h-screen">
         <VisitorRegistration
           onBack={() => { setShowVisitorForm(false); setEntryMethod(null) }}
           onComplete={handleComplete}
+          entryMethod={entryMethod}
         />
       </main>
     )
